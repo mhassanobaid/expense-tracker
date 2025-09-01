@@ -1,5 +1,3 @@
-// src/components/ExpenseForm.jsx
-import { useState } from "react";
 import {
   Box,
   TextField,
@@ -14,38 +12,39 @@ import { useMediaQuery } from "react-responsive";
 const FormBox = styled(Paper)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
-  gap: "20px",
-  padding: "1.5rem",
-  maxWidth: "400px",
+  gap: "1.2rem",
+  padding: "2rem",
+  maxWidth: "500px",
   margin: "auto",
   borderRadius: "16px",
-  boxShadow: "none", // no shadow
+  boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
 }));
 
 const categories = ["Travel", "Food", "Shopping", "Bills", "Other"];
 
 export default function ExpenseForm() {
-  const isMobile = useMediaQuery({ maxWidth: 960 });
+  const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const handleSave = () => {
-    alert('Expense Saved:\nCategory');
-    // later you can lift this data up via props
+    alert("Expense Saved!");
   };
 
   return (
-    <Box sx={{ mt: "20px", px: isMobile ? 2 : 0 }}>
-      <Typography variant="h5" align="center" gutterBottom>
+    <Box sx={{ mt: 4, px: isMobile ? 2 : 0 }}>
+      {/* Heading */}
+      <Typography
+        variant={isMobile ? "h6" : "h5"}
+        align="center"
+        gutterBottom
+        sx={{ fontWeight: "bold" }}
+      >
         Add Expense
       </Typography>
 
-      <FormBox elevation={0}>
+      {/* Form container */}
+      <FormBox>
         {/* Category dropdown */}
-        <TextField
-          select
-          label="Select Category"
-          onChange={() => {}}
-          fullWidth
-        >
+        <TextField select label="Category" fullWidth>
           {categories.map((cat) => (
             <MenuItem key={cat} value={cat}>
               {cat}
@@ -53,29 +52,21 @@ export default function ExpenseForm() {
           ))}
         </TextField>
 
-        {/* Show custom input if 'Other' chosen
-        {category === "Other" && (
-          <TextField
-            label="Enter Custom Category"
-            onChange={() => {}}
-            fullWidth
-          />
-        )} */}
-
         {/* Amount field */}
-        <TextField
-          label="Amount"
-          type="number"
-          onChange={() => {}}
-          fullWidth
-        />
+        <TextField label="Amount" type="number" fullWidth />
 
         {/* Save button */}
         <Button
           variant="contained"
           color="primary"
           onClick={handleSave}
-          sx={{ borderRadius: "12px", py: 1.2 }}
+          sx={{
+            borderRadius: "12px",
+            py: 1.2,
+            fontWeight: "bold",
+            width: isMobile ? "100%" : "50%",
+            alignSelf: isMobile ? "stretch" : "center",
+          }}
         >
           Save Expense
         </Button>
