@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, Typography, TextField, Paper } from "@mui/material";
 import { styled } from "@mui/system";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -8,6 +9,7 @@ import { useMediaQuery } from "react-responsive";
 import BudgetSetup from './components/BudgetForm'
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseTable from "./components/ExpenseTable";
+import AuthForm from "./components/AuthForm";
 
 const PageBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -32,63 +34,69 @@ const ContentWrapper = styled(Paper)(({ theme }) => ({
 }));
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <PageBox>
         <ContentWrapper>
-          {/* Header */}
-          <Box textAlign="center">
-            <Typography
-              variant={isMobile ? "h5" : "h4"}
-              gutterBottom
-              sx={{ fontWeight: "bold", color: "#1976d2" }}
-            >
-              Welcome to Expense Tracker
-            </Typography>
+          {!isLoggedIn ? (
+              <AuthForm onLogin={() =>  (true)} />
+            ) : (
+              <>
+                <Box textAlign="center">
+                  <Typography
+                    variant={isMobile ? "h5" : "h4"}
+                    gutterBottom
+                    sx={{ fontWeight: "bold", color: "#1976d2" }}
+                  >
+                    Welcome to Expense Tracker
+                  </Typography>
 
-            <Typography
-              variant={isMobile ? "body1" : "h6"}
-              sx={{ color: "text.secondary" }}
-            >
-              Track your daily spending and manage your budget easily
-            </Typography>
-          </Box>
+                  <Typography
+                    variant={isMobile ? "body1" : "h6"}
+                    sx={{ color: "text.secondary" }}
+                  >
+                    Track your daily spending and manage your budget easily
+                  </Typography>
+                </Box>
 
-          {/* Date Picker Section */}
-          <Box
-            display="flex"
-            flexDirection={isMobile ? "column" : "row"}
-            alignItems={isMobile ? "stretch" : "center"}
-            justifyContent="center"
-            gap={2}
-          >
-            <DatePicker
-              label="Select Date"
-              value={new Date()}
-              onChange={() => {}}
-              renderInput={(params) => (
-                <TextField {...params} fullWidth={isMobile} />
-              )}
-            />
+                <Box
+                  display="flex"
+                  flexDirection={isMobile ? "column" : "row"}
+                  alignItems={isMobile ? "stretch" : "center"}
+                  justifyContent="center"
+                  gap={2}
+                >
+                  <DatePicker
+                    label="Select Date"
+                    value={new Date()}
+                    onChange={() => {}}
+                    renderInput={(params) => (
+                      <TextField {...params} fullWidth={isMobile} />
+                    )}
+                  />
 
-            <Typography
-              variant="body1"
-              sx={{ fontWeight: 500, textAlign: isMobile ? "center" : "left" }}
-            >
-              Selected Date: {new Date().toLocaleDateString()}
-            </Typography>
-          </Box>
+                  <Typography
+                    variant="body1"
+                    sx={{ fontWeight: 500, textAlign: isMobile ? "center" : "left" }}
+                  >
+                    Selected Date: {new Date().toLocaleDateString()}
+                  </Typography>
+                </Box>
 
-          {/* Budget Setup Form */}
-          <BudgetSetup />
+                {/* Budget Setup Form */}
+                <BudgetSetup />
 
-          {/* Expense Form */}
-          <ExpenseForm />
+                {/* Expense Form */}
+                <ExpenseForm />
 
-          {/* Expense Table */}
-          <ExpenseTable />
+                {/* Expense Table */}
+                <ExpenseTable />
+              </>
+            )
+          }
         </ContentWrapper>
       </PageBox>
     </LocalizationProvider>
