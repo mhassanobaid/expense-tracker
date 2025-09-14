@@ -34,9 +34,7 @@ const ExpenseTable = () => {
         gap: "1.5rem",
       }}
     >
-      <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>
-        Expense Breakdown
-      </h2>
+      <h2 style={{ textAlign: "center", marginBottom: "1rem" }}>Expense Breakdown</h2>
 
       <Box
         sx={{

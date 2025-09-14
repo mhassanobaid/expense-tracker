@@ -31,6 +31,10 @@ export default function BudgetSetup() {
     alert("Budget saved (static demo)!");
   };
 
+  const salaryError = salary !== "" && salary < 1;
+  const expenseError = expense !== "" && expense < 1;
+  const hasError = salaryError || expenseError || salary === "" || expense === "";
+
   return (
     <Box sx={{ mt: 4, px: isMobile ? 2 : 0 }}>
       <Typography
@@ -51,10 +55,8 @@ export default function BudgetSetup() {
           placeholder="e.g. 5000"
           value={salary}
           onChange={(e) => setSalary(e.target.value)}
-          error={salary !== "" && salary < 1}
-          helperText={
-            salary !== "" && salary < 1 ? "Salary must be greater than 0" : ""
-          }
+          error={salaryError}
+          helperText={salaryError ? "Salary must be greater than 0" : ""}
           required
         />
 
@@ -66,12 +68,8 @@ export default function BudgetSetup() {
           placeholder="e.g. 200"
           value={expense}
           onChange={(e) => setExpense(e.target.value)}
-          error={expense !== "" && expense < 1}
-          helperText={
-            expense !== "" && expense < 1
-              ? "Expense must be greater than 0"
-              : ""
-          }
+          error={expenseError}
+          helperText={expenseError ? "Expense must be greater than 0" : ""}
           required
         />
 
@@ -80,6 +78,7 @@ export default function BudgetSetup() {
           type="submit"
           variant="contained"
           color="primary"
+          disabled={hasError}
           sx={{
             borderRadius: "12px",
             py: 1.2,

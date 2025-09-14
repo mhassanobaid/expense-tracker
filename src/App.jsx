@@ -5,8 +5,12 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useMediaQuery } from "react-responsive";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import BudgetSetup from './components/BudgetForm'
+import HeaderSection from "./components/HeaderSection";
+import DateSelector from "./components/DateSelector";
+import BudgetSetup from "./components/BudgetForm";
 import ExpenseForm from "./components/ExpenseForm";
 import ExpenseTable from "./components/ExpenseTable";
 import AuthForm from "./components/AuthForm";
@@ -37,67 +41,37 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
+  const handleSetIsLoggedIn = (val) => setIsLoggedIn(val);
+
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <PageBox>
         <ContentWrapper>
           {!isLoggedIn ? (
-              <AuthForm onLogin={() =>  (true)} />
-            ) : (
-              <>
-                <Box textAlign="center">
-                  <Typography
-                    variant={isMobile ? "h5" : "h4"}
-                    gutterBottom
-                    sx={{ fontWeight: "bold", color: "#1976d2" }}
-                  >
-                    Welcome to Expense Tracker
-                  </Typography>
+            <AuthForm onLogin={() => true} onSetIsLoggedIn={handleSetIsLoggedIn} />
+          ) : (
+            <>
+              <HeaderSection isMobile={isMobile} />
 
-                  <Typography
-                    variant={isMobile ? "body1" : "h6"}
-                    sx={{ color: "text.secondary" }}
-                  >
-                    Track your daily spending and manage your budget easily
-                  </Typography>
-                </Box>
+              <DateSelector isMobile={isMobile} />
 
-                <Box
-                  display="flex"
-                  flexDirection={isMobile ? "column" : "row"}
-                  alignItems={isMobile ? "stretch" : "center"}
-                  justifyContent="center"
-                  gap={2}
-                >
-                  <DatePicker
-                    label="Select Date"
-                    value={new Date()}
-                    onChange={() => {}}
-                    renderInput={(params) => (
-                      <TextField {...params} fullWidth={isMobile} />
-                    )}
-                  />
+              <BudgetSetup />
 
-                  <Typography
-                    variant="body1"
-                    sx={{ fontWeight: 500, textAlign: isMobile ? "center" : "left" }}
-                  >
-                    Selected Date: {new Date().toLocaleDateString()}
-                  </Typography>
-                </Box>
+              <ExpenseForm />
 
-                {/* Budget Setup Form */}
-                <BudgetSetup />
-
-                {/* Expense Form */}
-                <ExpenseForm />
-
-                {/* Expense Table */}
-                <ExpenseTable />
-              </>
-            )
-          }
+              <ExpenseTable />
+            </>
+          )}
         </ContentWrapper>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
       </PageBox>
     </LocalizationProvider>
   );

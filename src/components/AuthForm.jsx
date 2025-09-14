@@ -1,14 +1,8 @@
 import { useState } from "react";
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Link,
-} from "@mui/material";
+import { Box, TextField, Button, Typography, Paper, Link } from "@mui/material";
 import { styled } from "@mui/system";
 import { useMediaQuery } from "react-responsive";
+import { toast } from "react-toastify";
 
 const FormBox = styled(Paper)(() => ({
   display: "flex",
@@ -21,7 +15,7 @@ const FormBox = styled(Paper)(() => ({
   boxShadow: "0px 4px 12px rgba(0,0,0,0.1)",
 }));
 
-export default function AuthForm({ onLogin }) {
+export default function AuthForm({ onLogin, onSetIsLoggedIn }) {
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
   const [isSignup, setIsSignup] = useState(false);
@@ -32,7 +26,12 @@ export default function AuthForm({ onLogin }) {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
@@ -48,12 +47,23 @@ export default function AuthForm({ onLogin }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Error");
 
-      alert(isSignup ? "Signed up successfully!" : "Logged in successfully!");
+      toast.success(isSignup ? "Signed up successfully!" : "Logged in successfully!");
+
+      if (!isSignup) {
+        onSetIsLoggedIn(true);
+      }
+
       localStorage.setItem("token", data.token); // save JWT
       onLogin(); // switch to app view
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message);
     }
+  };
+
+  const isValidEmail = (email) => {
+    // RFC 5322 compliant (simple version)
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
   };
 
   return (
@@ -72,10 +82,13 @@ export default function AuthForm({ onLogin }) {
           label="Email"
           type="email"
           fullWidth
-          placeholder="you@example.com"
+          placeholder="Enter your email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          error={email !== "" && !isValidEmail(email)}
+          helperText={email !== "" && !isValidEmail(email) ? "Enter a valid email address" : ""}
+          InputLabelProps={{ shrink: true }}
         />
 
         <TextField
@@ -86,6 +99,7 @@ export default function AuthForm({ onLogin }) {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          InputLabelProps={{ shrink: true }}
         />
 
         <Button
@@ -107,7 +121,10 @@ export default function AuthForm({ onLogin }) {
           <Link
             component="button"
             variant="body2"
-            onClick={() => setIsSignup(!isSignup)}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsSignup(!isSignup);
+            }}
           >
             {isSignup ? "Login" : "Sign Up"}
           </Link>
